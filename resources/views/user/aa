@@ -1,0 +1,206 @@
+<header>
+    <div class="container-fuild">
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3  bg-light border-bottom shadow-sm">
+            <a  href="/home"> <img src="<?php echo asset('img/logo.svg'); ?>"></a>
+
+            {{-- @foreach ($categorys as $category)
+            <a class="ml-3 mr-auto" href="#">{{ $category->name }}</a>
+            @endforeach --}}
+            <div class="ml-4">
+                <li class="nav-item active">
+                    <a class="nav-link navbar"  href="/home">Home <span class="sr-only">(current)</span></a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link navbar"  href="#">Video</a>
+                  </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle navbar"  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Category
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @foreach($categorys as $category)
+                  <a class="dropdown-item" value="{{$category->id}}">{{$category->name}}</a>
+                  @endforeach
+                </div>
+              </li>
+
+
+
+              <li class="nav-item">
+                <a class="nav-link navbar"  href="#">Contact</a>
+              </li>
+            </ul>
+
+            </div>
+
+            <form class="form-inline mr-3 my-lg-0 serachuser"  action="/searchshowarticle" method="GET">
+                <input class="form-control mr-sm-2" type="search" name="search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+
+            <!-- Right Side Of Navbar -->
+            <ul class="navbar-nav">
+                <!-- Authentication Links -->
+                @guest
+                <li class="nav-item">
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('login') }}">Sign up</a>
+                </li>
+                @else
+                <li class="nav-item dropdown ">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <img src="{{asset(Auth::user()->avatar)}}" style="height:50px;width:50px; border-radius : 50% "
+                            alt="" > {{ Auth::user()->name  }} <span  class="caret"></span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="my_favorites">
+                            My Favorite
+                        </a>
+                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                 document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+
+
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+                @endguest
+            </ul>
+        </div>
+    </div>
+
+
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@extends('layouts.mainlayout_user')
+
+@section('content')
+<header>
+    <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a href="#" class="sidebar-toggler text-gray-500 mr-4 mr-lg-5 lead"><i></i>  <img class="ml-3" src="<?php echo asset('img/logo.svg'); ?>" alt="Rikeisolf"></a>
+        <a class="nav-link navbar"  href="/home">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link navbar"  href="news">News</a>
+        <a class="nav-link navbar"  href="video_all">Video</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle navbar"  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                @foreach($categorys as $category)
+              <a class="dropdown-item"  value="{{$category->id}}">{{$category->name}}</a>
+              @endforeach
+            </div>
+          </li>
+          <a class="nav-link navbar"  href="#">Contact</a>
+        <ul class="ml-auto d-flex align-items-center list-unstyled mb-0">
+          <li class="nav-item">
+            <form id="searchForm"  action="/searchshowarticle" method="GET" class="ml-auto d-none d-lg-block">
+              <div class="form-group position-relative mb-0">
+                <button type="submit" style="top: -3px; left: 0;" class="position-absolute bg-white border-0 p-0"><i class="o-search-magnify-1 text-gray text-lg"></i></button>
+                <input type="search" name="search" placeholder="Search ..." class="form-control form-control-sm border-0 no-shadow pl-4">
+              </div>
+            </form>
+          </li>
+          @guest
+                <li class="nav-item">
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('login') }}">Sign up</a>
+                    </li>
+                    @else
+          <li class="nav-item dropdown ml-auto"><a id="userInfo" href="http://example.com" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+            <img src="{{asset(Auth::user()->avatar)}}" style="height:50px;width:50px; border-radius : 50% "
+            alt="" ></a>
+            <div aria-labelledby="userInfo" class="dropdown-menu"><a href="#" class="dropdown-item"><strong class="d-block text-uppercase headings-font-family">{{ Auth::user()->name  }}</strong>
+                <small> @if (Auth::user()->type ==2)
+                    Super Admin
+                    @elseif (Auth::user()->type ==1)
+                    Admin
+                    @else
+                    User
+                    @endif</small>
+                </a>
+                <div class="dropdown-divider"></div><a href="my_favorites" class="dropdown-item">My Favorite</a>
+              <div class="dropdown-divider"></div><a href="#" class="dropdown-item">Settings</a><a href="#" class="dropdown-item">Activity log       </a>
+              <div class="dropdown-divider">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                  </div><a href="{{ route('logout') }}" onclick="event.preventDefault();
+                  document.getElementById('logout-form').submit();" class="dropdown-item">{{ __('Logout') }}</a>
+            </div>
+          </li>
+          @endguest
+        </ul>
+      </nav>
+    </header>
+
+
+<div class="container">
+    <h1>Category : </h1>
+    <div id="app">
+
+        @foreach ($categorys as $category)
+        <div class="card mb-3">
+          {{-- {{dd($category)}} --}}
+            <a href="/home/">
+          {{--  {{dd($category)}}  --}}
+
+                <div class="row no-gutters text-dark">
+
+                    <div class="col-md-3">
+
+                        <img class="mainconfixlayoutmicro" src="{{ asset($category->article['imagenews']) }}" alt="Imagenews">
+                        {{-- <svg class="bd-placeholder-img" width="100%" height="250" xmlns="" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" role="img"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image</text></svg> --}}
+                    </div>
+                    <div class="col-md-9 ">
+                        <div class="card-body ml-5">
+                            <h5 class="card-title">{{$category->article['title']}}</h5>
+                            <p class="card-text">{{$category->article['description']}}</p>
+                            <p class="card-text"><small class="text-muted">{{$category->article['created_at']}}</small>
+                            </p>
+                            @if (Auth::check())
+                            <div class="panel-footer">
+                                <favorite :article={{ $category->article['id'] }}
+                                    :favorited={{ $category->article->favorited() ? 'true' : 'false' }}></favorite>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @endforeach
+
+
+    </div>
+</div>
+
+@endsection
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
